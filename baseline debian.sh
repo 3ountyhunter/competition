@@ -64,18 +64,23 @@ if [[ $a == "Y" || $a == "Y" ]]; then
  echo "Review parsed output for system compliance"
   sleep 5
   touch ~/baseline/output/parsed.log
+  echo "System Information ******************************************************************************************************************************************" >> ~/baseline/outpu
+t/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep os_version >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep nameserver >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep network_ | sed -e 's/network_\[\]=//g' >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep firewall_ >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep cronjob >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep real_user | sed -e 's/real_user\[\]=//g' >> ~/baseline/output/parsed.log
+    cat ~/baseline/output/lynis-report.dat | grep available_shell | sed -e 's/available_shell\[\]=//g' >> ~/baseline/output/parsed.log
+
    echo "Warnings ******************************************************************************************************************************************" >> ~/baseline/outpu
 t/parsed.log
   cat ~/baseline/output/lynis-report.dat | grep warning | sed -e 's/warning\[\]=//g' >> ~/baseline/output/parsed.log
    echo "Suggestion ****************************************************************************************************************************************" >> ~/baseline/outpu
 t/parsed.log
   cat ~/baseline/output/lynis-report.dat | grep suggestion | sed -e 's/suggestion\[\]=//g' >> ~/baseline/output/parsed.log
-   echo "Installed Packages ********************************************************************************************************************************" >> ~/baseline/outpu
-t/parsed.log
-  cat ~/baseline/output/lynis-report.dat | grep installed_packages | sed -e 's/installed_packages\[\]=//g' >> ~/baseline/output/parsed.log
-   echo "Avalilable Shell **********************************************************************************************************************************" >> ~/baseline/outpu
-t/parsed.log
-  cat ~/baseline/output/lynis-report.dat | grep available_shell | sed -e 's/available_shell\[\]=//g' >> ~/baseline/output/parsed.log
+  # Displays parsed log
   cat ~/baseline/output/parsed.log | less
 
         # Check to see if system reboot is required
