@@ -28,7 +28,7 @@ if [[ $a == "Y" || $a == "Y" ]]; then
   echo "Pin: origin packages.cisofy.com" >> /etc/apt/preferences.d/lynis
   echo "Pin-Priority: 600" >> /etc/apt/preferences.d/lynis
 
-  # Add the correct repo based on the verson of debian running
+  # Add the correct repo based on the version of Debian running
   if [[ $codename = "stretch" ]]
   then
     echo "deb https://packages.cisofy.com/community/lynis/deb/ stretch main" > /etc/apt/sources.list.d/cisofy-lynis.list
@@ -43,14 +43,15 @@ if [[ $a == "Y" || $a == "Y" ]]; then
   then
     echo "deb https://packages.cisofy.com/community/lynis/deb/ wheezy main" > /etc/apt/sources.list.d/cisofy-lynis.list
   fi
- apt update -y &> ~/baseline/update.log
+
+  apt update -y &> ~/baseline/update.log
 
   # Installing the Required Software
   echo "Installing the required Software"
   sleep 5
-        apt install curl git nano lynx python tmux lynis -y
+	apt install curl git nano lynx python tmux lynis -y
 
-  # Downloads and Runs IR (Incidance Response) program
+  # Downloads and Runs IR (Incidence Response) program
   echo "Installing IR program"
   sleep 5
   git clone https://github.com/SekoiaLab/Fastir_Collector_Linux
@@ -88,13 +89,13 @@ if [[ $a == "Y" || $a == "Y" ]]; then
   # Displays parsed log
    cat ~/baseline/output/parsed.log | less
 
-        # Check to see if system reboot is required
+	# Check to see if system reboot is required
   if [ -f /var/run/reboot-required ]; then
-  echo 'Reboot Required, please consiter rebooting'
+  echo 'Reboot Required, please consider rebooting'
   sleep 5
   exit
   fi
 else
-        echo "You entered N or an incorrct response"
+        echo "You entered N or an incorrect response"
         echo "Please try again later"
 fi
