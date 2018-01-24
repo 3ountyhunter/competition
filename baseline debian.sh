@@ -58,7 +58,7 @@ if [[ $a == "Y" || $a == "Y" ]]; then
   cd Fastir_Collector_Linux
   python fastIR_collector_linux.py &> ~/baseline/fastir.log
   cp -R output/ ~/baseline/output
-40x480 console mode. How can i set the console to work at 1024x768?
+# 40x480 console mode. How can i set the console to work at 1024x768?
 
   # Setting up and Installing Lynis
   echo "Starting Lynis"
@@ -88,8 +88,6 @@ if [[ $a == "Y" || $a == "Y" ]]; then
    cat ~/baseline/output/lynis-report.dat | grep warning | sed -e 's/warning\[\]=//g' >> ~/baseline/output/parsed.log
      echo "Suggestion ****************************************************************************************************************************************" >> ~/baseline/output/parsed.log
    cat ~/baseline/output/lynis-report.dat | grep suggestion | sed -e 's/suggestion\[\]=//g' >> ~/baseline/output/parsed.log
-  # Displays parsed log
-   cat ~/baseline/output/parsed.log | less
 
 	# Check to see if system reboot is required
   if [ -f /var/run/reboot-required ]; then
