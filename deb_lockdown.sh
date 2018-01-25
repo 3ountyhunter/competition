@@ -10,18 +10,13 @@ fi
 red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
-# Confirm script execution
-echo "deb_lockdown is about to run, continue?"
-read ans
-if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
-then
-
+echo "${green}Running Lockdown Script..."
+sleep 5
 # Remove Aliases
 echo "${red} Removing Aliases..."
 unalias -a
 # Fix file repositories
 
-sleep 3
 echo "Fixing Repositories..."
 	mv /etc/apt/sources.list /etc/apt/sources.list.org
 
@@ -89,6 +84,5 @@ read ans
 else
 echo "Script is Done, Good Luck!${reset}"
 fi
-else
 exit
 fi
