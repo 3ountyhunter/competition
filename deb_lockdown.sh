@@ -5,12 +5,32 @@ if [ $EUID -ne 0 ]; then
    echo "This script must be run as root" 1>&2
 exit
 fi
+# Sets constants used for coloring output
+# Syntax echo "${red}red text ${green}green text${reset}"
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
 # Remove Aliases
+echo "${red} Removing Aliases..."
 unalias -a
-# Install needed Software
-apt install glances ufw openssh-server -y
-# Change password for root account
+# Fix file repositories
+echo "Fixing Repositories..."
+	mv /etc/apt/sources.list /etc/apt/sources.list.org
 
+    echo "deb http://http.debian.net/debian $VERSION main" > /etc/apt/sources.list
+    echo "deb-src http://http.debian.net/debian $VERSION main" >> /etc/apt/sources.list
+
+    echo "deb http://security.debian.org/ $VERSION/updates main" >> /etc/apt/sources.list
+    echo "deb-src http://security.debian.org/ $VERSION/updates main" >> /etc/apt/sources.list
+
+    echo "deb http://http.debian.net/debian $VERSION-updates main" >> /etc/apt/sources.list
+    echo "deb-src http://http.debian.net/debian $VERSION-updates main" >> /etc/apt/sources.list
+
+# Install needed Software
+echo "Installing Software..."
+apt install glances ufw openssh-server -y
+clear
+# Change password for root account
 echo "Input New Password for Root Account:"
 passwd
 
@@ -18,22 +38,23 @@ passwd
 
 
 # Reset crontab
+echo -e "Resetting Crontab..."
 crontab -r
 cd /etc/
-/bin/rm -f cron.deny at.deny
+/bin/rm -f cron.deny # at.deny
 echo root > cron.allow
 #echo root >at.allow (Might not apply to newer Debian)
-/bin/chown root:root cron.allow at.allow
-/bin/chmod 640 cron.allow at.allow
-
+/bin/chown root:root cron.allow # at.allow
+/bin/chmod 640 cron.allow # at.allow
+clear
 #----------------Remote Administration----------------#
+echo "Cleaning up SSH..."
 # Remove existing SSH keys
 rm -rf ~/.ssh/*
 rm -f ~/ssh/*.pub
 rm -f ~/ssh/*key
-ssh-keygen -R
 # Configure SSH server
-echo "Configuring SSH Access"
+echo "Configuring SSH Access..."
 ufw allow ssh
 
 # Change SSH Config
@@ -41,10 +62,10 @@ ufw allow ssh
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sed -i "s/X11Forwarding yes/X11Forwarding no/g" /etc/ssh/sshd_config
 
-echo "Would you like to disable SSH password authentication?"
+echo -e "Would you like to \e[31mdisable \e[46mSSH password authentication?\e[49m "
 read ans
- if [ "$ans" = "Y" ] || [ "$ans" = "y" ]
+ if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
  then
 # sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
 fi
-echo Fallout
+echo "Done"
