@@ -1,6 +1,6 @@
 # Assembled by NetHunter for CCDN 2017
 #!/bin/bash
-
+clear
 if [ $EUID -ne 0 ]; then
    echo "This script must be run as root" 1>&2
 exit
@@ -12,6 +12,10 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 echo "${green}Running Lockdown Script..."
 sleep 5
+# Change password for root account
+echo "Input New Password for Root Account:"
+sleep 3
+passwd
 # Remove Aliases
 echo "${red} Removing Aliases..."
 unalias -a
@@ -20,11 +24,10 @@ unalias -a
 echo "Fixing Repositories..."
 	mv /etc/apt/sources.list /etc/apt/sources.list.org
   VERSION=$(lsb_release -sc)
-  echo $VERSION
-    echo "deb http://ftp.us.debian.net/debian/ $VERSION main" > /etc/apt/sources.list
-    echo "deb-src http://ftp.us.debian.net/debian $VERSION main" >> /etc/apt/sources.list
+    echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
+    echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
 
-    echo "deb http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
+    echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
     echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
 
 # Install needed Software
@@ -33,11 +36,6 @@ echo "Installing Software..."
 sleep 3
 apt install glances ufw openssh-server -y
 clear
-# Change password for root account
-echo "Input New Password for Root Account:"
-sleep 3
-passwd
-
 # Check for multiple users with UID 0
 
 
