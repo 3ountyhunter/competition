@@ -10,10 +10,16 @@ fi
 red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
+# Confirm script execution
+echo "deb_lockdown is about to run, continue?"
+if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
+then
 # Remove Aliases
 echo "${red} Removing Aliases..."
 unalias -a
 # Fix file repositories
+
+sleep 3
 echo "Fixing Repositories..."
 	mv /etc/apt/sources.list /etc/apt/sources.list.org
 
@@ -27,18 +33,23 @@ echo "Fixing Repositories..."
     echo "deb-src http://http.debian.net/debian $VERSION-updates main" >> /etc/apt/sources.list
 
 # Install needed Software
+
 echo "Installing Software..."
+sleep 3
 apt install glances ufw openssh-server -y
 clear
 # Change password for root account
 echo "Input New Password for Root Account:"
+sleep 3
 passwd
 
 # Check for multiple users with UID 0
 
 
 # Reset crontab
+
 echo -e "Resetting Crontab..."
+sleep 3
 crontab -r
 cd /etc/
 /bin/rm -f cron.deny # at.deny
@@ -49,23 +60,33 @@ echo root > cron.allow
 clear
 #----------------Remote Administration----------------#
 echo "Cleaning up SSH..."
+sleep 5
 # Remove existing SSH keys
+
 rm -rf ~/.ssh/*
 rm -f ~/ssh/*.pub
 rm -f ~/ssh/*key
+clear
 # Configure SSH server
+
 echo "Configuring SSH Access..."
+sleep 3
 ufw allow ssh
 
+clear
 # Change SSH Config
 
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sed -i "s/X11Forwarding yes/X11Forwarding no/g" /etc/ssh/sshd_config
-
-echo -e "Would you like to \e[31mdisable \e[46mSSH password authentication?\e[49m "
+#
+echo -e "${reset}Would you like to \e[31mdisable \e[46mSSH password authentication?\e[49m "
 read ans
  if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
  then
-# sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
+   sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
+else
+echo "Script is Done, Good Luck!${reset}"
 fi
-echo "Done"
+else
+exit
+fi
