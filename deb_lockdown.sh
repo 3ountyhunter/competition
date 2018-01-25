@@ -12,8 +12,10 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 # Confirm script execution
 echo "deb_lockdown is about to run, continue?"
+read ans
 if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
 then
+
 # Remove Aliases
 echo "${red} Removing Aliases..."
 unalias -a
