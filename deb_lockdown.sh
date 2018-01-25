@@ -19,15 +19,13 @@ unalias -a
 
 echo "Fixing Repositories..."
 	mv /etc/apt/sources.list /etc/apt/sources.list.org
+  VERSION=$(lsb_release -sc)
+  echo $VERSION
+    echo "deb http://ftp.us.debian.net/debian/ $VERSION main" > /etc/apt/sources.list
+    echo "deb-src http://ftp.us.debian.net/debian $VERSION main" >> /etc/apt/sources.list
 
-    echo "deb http://http.debian.net/debian $VERSION main" > /etc/apt/sources.list
-    echo "deb-src http://http.debian.net/debian $VERSION main" >> /etc/apt/sources.list
-
-    echo "deb http://security.debian.org/ $VERSION/updates main" >> /etc/apt/sources.list
-    echo "deb-src http://security.debian.org/ $VERSION/updates main" >> /etc/apt/sources.list
-
-    echo "deb http://http.debian.net/debian $VERSION-updates main" >> /etc/apt/sources.list
-    echo "deb-src http://http.debian.net/debian $VERSION-updates main" >> /etc/apt/sources.list
+    echo "deb http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
+    echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
 
 # Install needed Software
 
@@ -76,7 +74,7 @@ clear
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sed -i "s/X11Forwarding yes/X11Forwarding no/g" /etc/ssh/sshd_config
 #
-echo -e "${reset}Would you like to \e[31mdisable \e[46mSSH password authentication?\e[49m "
+echo -e "${reset}Would you like to \e[31mdisable ${reset}SSH password authentication?"
 read ans
  if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
  then
