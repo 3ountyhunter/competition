@@ -18,12 +18,12 @@ sleep 5
 sleep 3
 /bin/mkdir ~/original
 /bin/mv ~/.bash* ~/original
-/bin/cp /competition/.bashrc ~
+/bin/cp ~/competition/.bashrc ~
 . ~/.bashrc
 
 # Change password for root account
   echo "Input New Password for Root Account:"
-/bin/passwd
+/usr/bin/passwd
 
 # Fix file repositories
   echo "Fixing Repositories..."
