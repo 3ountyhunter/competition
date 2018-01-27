@@ -6,7 +6,6 @@ if [ $EUID -ne 0 ]; then
 exit
 fi
 # Sets constants used for coloring output
-
 # Syntax echo "${red}red text ${green}green text${reset}"
 red=`tput setaf 1`
 green=`tput setaf 2`
@@ -17,6 +16,7 @@ reset=`tput sgr0`
 # Remove bashrc
 /bin/echo "Archiving files"
 /bin/sleep 3
+/usr/bin/chattr -i ~/.bash*
 /usr/bin/chattr -i ~/.profile*
 /bin/mkdir ~/original
 /bin/mv ~/.bash* ~/original
@@ -36,7 +36,7 @@ passwd
   echo "Fixing Repositories..."
   sleep 3
   chattr -i /etc/apt/sources.list
-	cp /etc/apt/sources.list ~/original/sources.list.org
+  cp /etc/apt/sources.list ~/original/sources.list.org
   VERSION=$(lsb_release -sc)
   echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
   echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
@@ -59,7 +59,18 @@ sleep 3
 chattr -i /etc/crontab
 chattr -i /var/spool/cron
 mv /var/spool/cron ~/original
-crontab -r
+#mv /etc/cron* ~/original (Untested, may break cron)
+#mv /etc/cron.d (Untested, may break cron)
+
+# Allow only Root Cron
+cd /etc/
+chattr -i cron.*
+mv cron.deny cron.allow ~/original # at.deny
+  echo root > cron.allow
+#echo root >at.allow (Might not apply to newer Debian)
+/bin/chown root:root cron.allow # at.allow
+/bin/chmod 600 cron.allow # at.allow
+clear
 
 # ----------------------Assign Permissions------------------ #
 chown root:root /etc/passwd-
@@ -77,16 +88,6 @@ chmod 600 /etc/gshadow-
 
 # Uncomment for Extreme Paranoia (Warning: May Break System)
 chown -R root /etc
-
-# Allow only Root Cron
-cd /etc/
-chattr -i cron.*
-mv cron.deny cron.allow ~/original # at.deny
-  echo root > cron.allow
-#echo root >at.allow (Might not apply to newer Debian)
-/bin/chown root:root cron.allow # at.allow
-/bin/chmod 600 cron.allow # at.allow
-clear
 
 #----------------Remote Administration----------------#
   echo "Cleaning up SSH..."
