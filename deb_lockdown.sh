@@ -6,6 +6,9 @@ if [ $EUID -ne 0 ]; then
 exit
 fi
 
+/bin/echo "${green}Running Lockdown Script..."
+/bin/sleep 5
+
 # Fix file repositories
 /bin/echo "Fixing Repositories..."
 /bin/sleep 3
@@ -23,15 +26,13 @@ fi
 red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
-/bin/echo "${green}Running Lockdown Script..."
-/bin/sleep 5
+
 
   # Remove bashrc
   /bin/echo "${red}Archiving files"
   /bin/sleep 3
   /usr/bin/chattr -i ~/.bash*
   /usr/bin/chattr -i ~/.profile*
-  /bin/mkdir ~/original
   /bin/mv ~/.bash* ~/original
   /bin/mv ~/.profile* ~/original
 
@@ -43,8 +44,7 @@ reset=`tput sgr0`
   /usr/bin/apt-get --reinstall install -y coreutils
   /usr/bin/apt-get --reinstall install -y nano
 
-else
-  clear
+clear
 # Change password for root account
   echo "${green}Input New Password for Root Account:"
 passwd
