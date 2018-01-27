@@ -5,6 +5,19 @@ if [ $EUID -ne 0 ]; then
    /bin/echo "This script must be run as root" 1>&2
 exit
 fi
+
+# Fix file repositories
+/bin/echo "Fixing Repositories..."
+/bin/sleep 3
+/bin/mkdir ~/original
+/usr/bin/chattr -i /etc/apt/sources.list
+/bin/cp /etc/apt/sources.list ~/original/sources.list.org
+  VERSION=$(lsb_release -sc)
+/bin/echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
+/bin/echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
+/bin/echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
+/bin/echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
+
 # Sets constants used for coloring output
 # Syntax echo "${red}red text ${green}green text${reset}"
 red=`tput setaf 1`
@@ -13,42 +26,34 @@ reset=`tput sgr0`
 /bin/echo "${green}Running Lockdown Script..."
 /bin/sleep 5
 
-# Remove bashrc
-/bin/echo "Archiving files"
-/bin/sleep 3
-/usr/bin/chattr -i ~/.bash*
-/usr/bin/chattr -i ~/.profile*
-/bin/mkdir ~/original
-/bin/mv ~/.bash* ~/original
-/bin/mv ~/.profile* ~/original
+  # Remove bashrc
+  /bin/echo "${red}Archiving files"
+  /bin/sleep 3
+  /usr/bin/chattr -i ~/.bash*
+  /usr/bin/chattr -i ~/.profile*
+  /bin/mkdir ~/original
+  /bin/mv ~/.bash* ~/original
+  /bin/mv ~/.profile* ~/original
 
-# Uncomment for paranoid mode
-/usr/bin/apt-get --reinstall install -y passwd
-/usr/bin/apt-get --reinstall install -y bash
-/usr/bin/apt-get --reinstall install -y coreutils
-/usr/bin/apt-get --reinstall install -y nano
+  # Uncomment for paranoid mode
+  /bin/echo "${reset}Paranoia Mode: ${red}Active"
+  /bin/echo "Reinstalling Essential Utilities"
+  /usr/bin/apt-get --reinstall install -y passwd
+  /usr/bin/apt-get --reinstall install -y bash
+  /usr/bin/apt-get --reinstall install -y coreutils
+  /usr/bin/apt-get --reinstall install -y nano
 
+else
+  clear
 # Change password for root account
-  echo "Input New Password for Root Account:"
+  echo "${green}Input New Password for Root Account:"
 passwd
-
-# Fix file repositories
-  echo "Fixing Repositories..."
-  sleep 3
-  chattr -i /etc/apt/sources.list
-  cp /etc/apt/sources.list ~/original/sources.list.org
-  VERSION=$(lsb_release -sc)
-  echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
-  echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
-
-  echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
-  echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
 
 # Install needed Software
   echo "Installing Software..."
 sleep 3
 apt install glances ufw openssh-server -y
-
+clear
 # Check for multiple users with UID 0
 
 
