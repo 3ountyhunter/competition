@@ -47,7 +47,7 @@ apt install glances ufw openssh-server -y
 # Reset crontab
   echo -e "Resetting Crontab..."
 sleep 3
-cp /var/spool/cron ~/original
+cp -r /var/spool/cron ~/original
 crontab -r
 cd /etc/
 mv cron.deny cron.allow ~/original # at.deny
@@ -77,6 +77,7 @@ clear
 cp /etc/ssh/sshd_config ~/original
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sed -i "s/X11Forwarding yes/X11Forwarding no/g" /etc/ssh/sshd_config
+sed -i "s/*MaxAuthTries */MaxAuthTries 1/g" /etc/ssh/sshd_config
   echo -e "${reset}Would you like to \e[31mdisable ${reset}SSH password authentication?"
 read ans
  if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
