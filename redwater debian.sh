@@ -31,6 +31,7 @@ fi
 /bin/echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
 /bin/echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
 /usr/bin/apt-get update
+clear
 
 # Uncomment for paranoid mode
 /bin/echo "${reset}Paranoia Mode: ${red}Active${reset}"
@@ -46,7 +47,7 @@ ip addr
   echo "${green}Utilities repaired, select interface to bring down to continue:"
 read interface
 ip link set $interface down
-/bin/clear
+clear
 
 # Remove bashrc
   echo "${red}Archiving files"
@@ -127,6 +128,7 @@ read ans
    sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config
 else
   echo "Allowing Password Authentication: ${red}Disable ASAP!${reset}"
+ fi
  service sshd restart
 
  #-------------------------------Networking Re-Enabled-------------------------------#
@@ -177,7 +179,7 @@ echo "Review parsed output for system compliance"
  cat ~/baseline/output/lynis-report.dat | grep installed_packages | sed -e 's/installed_packages\[\]=//g' >> ~/baseline/output/parsed.log
   echo "Avalilable Shell **********************************************************************************************************************************" >> ~/baseline/output/parsed.log
  cat ~/baseline/output/lynis-report.dat | grep available_shell | sed -e 's/available_shell\[\]=//g' >> ~/baseline/output/parsed.log
- 
+
  # Check to see if system reboot is required
  if [ -f /var/run/reboot-required ]; then
  echo 'Reboot Required, please consider rebooting'
