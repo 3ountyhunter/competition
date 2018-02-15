@@ -28,7 +28,7 @@ fi
 fi
 clear
 
-echo "${red}Starting the Script"
+echo "${red}Starting the Script${reset}"
 sleep 5
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C80E383C3DE9F082E01391A0366C67DE91CA5D5F
 apt install apt-transport-https
@@ -37,6 +37,7 @@ touch /etc/apt/preferences.d/lynis
 echo "Package: lynis" >> /etc/apt/preferences.d/lynis
 echo "Pin: origin packages.cisofy.com" >> /etc/apt/preferences.d/lynis
 echo "Pin-Priority: 600" >> /etc/apt/preferences.d/lynis
+clear
 
 ## Checks the /etc/apt/sources.list and asks if it is correct
   echo "Please verify that the source list is correct"
@@ -55,6 +56,7 @@ else
   /bin/echo "Fixing Repositories...${reset}"
   /bin/sleep 3
   /bin/mkdir ~/original
+  /bin/mkdir ~/baseline
   /usr/bin/chattr -i /etc/apt/sources.list
   /bin/cp /etc/apt/sources.list ~/original/sources.list.org
     VERSION=$(lsb_release -sc)
@@ -92,11 +94,12 @@ clear
 
 # Updating the system
   echo "Upgrading system"
+  sleep 3
   apt upgrade -y
 clear
 
   ip addr
-  echo "${green}Utilities repaired, select interface to bring down to continue:"
+  echo "${green}Utilities repaired, select interface to bring down to continue:${reset}"
   read interface
   ip link set $interface down
 clear
@@ -107,6 +110,7 @@ clear
   lynis audit system
   cp /var/log/lynis.log ~/baseline/output/lynis.log
   cp /var/log/lynis-report.dat ~/baseline/output/lynis-report.dat
+clear
 
 # Parse lynis-report.dat for easier viewing
   echo "Remember to view Lynis log for system compliance"
