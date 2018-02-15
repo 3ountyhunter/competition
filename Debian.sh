@@ -13,21 +13,30 @@
       echo "You're not root. Please run as root."
       exit
 fi
-
   /usr/bin/clear
-  #----------------------------------------------WHILE ONLINE------------------------------------------
+#----------------------------------------------WHILE ONLINE------------------------------------------
 
-  #-------------------------------Beginning of the Script-------------------------------
-  # Test network DHCP configuration with ifup
-    echo "${red}Starting the Script"
-  sleep 5
-    echo "Checking network connectivity"
+#-------------------------------Beginning of the Script-------------------------------
+# Test network DHCP configuration with ifup
+  echo "Checking network connectivity"
   wget -q --tries=5 --timeout=20 --spider https://google.com
   if [[ $? -eq 0 ]]; then
     echo "Online"
   else
     echo "Offline"
-  fi
+    sleep 3
+fi
+clear
+
+echo "${red}Starting the Script"
+sleep 5
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C80E383C3DE9F082E01391A0366C67DE91CA5D5F
+apt install apt-transport-https
+codename=$(lsb_release -c)
+touch /etc/apt/preferences.d/lynis
+echo "Package: lynis" >> /etc/apt/preferences.d/lynis
+echo "Pin: origin packages.cisofy.com" >> /etc/apt/preferences.d/lynis
+echo "Pin-Priority: 600" >> /etc/apt/preferences.d/lynis
 
 ## Checks the /etc/apt/sources.list and asks if it is correct
   echo "Please verify that the source list is correct"
@@ -37,7 +46,7 @@ fi
   read a
   if [[ $a == "Y" || $a == "y" ]]; then
 # If Correct then Runs the following
-  echo "Starting the Script"
+  echo "Sources look good, running updates:"
   sleep 5
   apt update -y &> ~/baseline/update.log
 else
@@ -53,7 +62,7 @@ else
   /bin/echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
   /bin/echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
   /bin/echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
-  /usr/bin/apt-get update
+  apt update -y &> ~/baseline/update.log
 clear
 fi
 
@@ -98,6 +107,20 @@ clear
   lynis audit system
   cp /var/log/lynis.log ~/baseline/output/lynis.log
   cp /var/log/lynis-report.dat ~/baseline/output/lynis-report.dat
+
+# Parse lynis-report.dat for easier viewing
+  echo "Remember to view Lynis log for system compliance"
+  sleep 5
+  touch ~/baseline/output/parsed.log
+   echo "Warnings ******************************************************************************************************************************************" >> ~/baseline/output/parsed.log
+  cat ~/baseline/output/lynis-report.dat | grep warning | sed -e 's/warning\[\]=//g' >> ~/baseline/output/parsed.log
+   echo "Suggestion ****************************************************************************************************************************************" >> ~/baseline/output/parsed.log
+  cat ~/baseline/output/lynis-report.dat | grep suggestion | sed -e 's/suggestion\[\]=//g' >> ~/baseline/output/parsed.log
+   echo "Installed Packages ********************************************************************************************************************************" >> ~/baseline/output/parsed.log
+  cat ~/baseline/output/lynis-report.dat | grep installed_packages | sed -e 's/installed_packages\[\]=//g' >> ~/baseline/output/parsed.log
+   echo "Avalilable Shell **********************************************************************************************************************************" >> ~/baseline/output/parsed.log
+  cat ~/baseline/output/lynis-report.dat | grep available_shell | sed -e 's/available_shell\[\]=//g' >> ~/baseline/output/parsed.log
+clear
 
 # Remove bashrc
   echo "${red}Archiving files"
@@ -172,6 +195,7 @@ clear
   sed -i "s/.*PermitRootLogin.*/PermitRootLogin no/g" /etc/ssh/sshd_config
   sed -i "s/.*X11Forwarding.*/X11Forwarding no/g" /etc/ssh/sshd_config
   sed -i "s/.*MaxAuthTries.*/MaxAuthTries 1/g" /etc/ssh/sshd_config
+
     echo -e "${reset}Would you like to \e[31mdisable ${reset}SSH password authentication?"
   read ans
    if [ "$ans" = "Y" ] || [ "$ans" = "y" ];
