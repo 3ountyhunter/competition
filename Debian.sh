@@ -53,17 +53,17 @@ clear
 else
 
 # Fix file repositories
-  /bin/echo "Fixing Repositories...${reset}"
-  /bin/sleep 3
-  /bin/mkdir ~/original
-  /bin/mkdir ~/baseline
-  /usr/bin/chattr -i /etc/apt/sources.list
-  /bin/cp /etc/apt/sources.list ~/original/sources.list.org
+  echo "Fixing Repositories...${reset}"
+  sleep 3
+  mkdir ~/original
+  mkdir ~/baseline
+  chattr -i /etc/apt/sources.list
+  cp /etc/apt/sources.list ~/original/sources.list.org
     VERSION=$(lsb_release -sc)
-  /bin/echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
-  /bin/echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
-  /bin/echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
-  /bin/echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
+  echo "deb http://ftp.us.debian.org/debian/ $VERSION main"  > /etc/apt/sources.list
+  echo "deb-src http://ftp.us.debian.org/debian/ $VERSION main" >> /etc/apt/sources.list
+  echo "deb http://security.debian.org/debian-security $VERSION/updates main"  >> /etc/apt/sources.list
+  echo "deb-src http://security.debian.org/debian-security $VERSION/updates main" >> /etc/apt/sources.list
   apt update -y &> ~/baseline/update.log
 clear
 fi
